@@ -1,6 +1,3 @@
-"use client"
-
-import { useEffect, useState } from "react";
 import ProductCard from "../components/ProductCard";
 
 interface Product {
@@ -18,7 +15,7 @@ interface Product {
 
 const fetchData = async (): Promise<Product[] | undefined> => {
   try {
-    const response = await fetch("https://fakestoreapi.com/products");
+    const response = await fetch("https://fakestoreapi.com/products", { cache: "no-store"  });
     if(!response.ok) {
       throw new Error("There's a problem with the response")
     }
@@ -30,23 +27,9 @@ const fetchData = async (): Promise<Product[] | undefined> => {
   }
 }
 
-const FakeStoreApi = () => {
+const FakeStoreApi = async () => {
 
-  const [productList, setProductList] = useState<Product[] | undefined>(undefined);
-
-  useEffect(() => {
-    const loadProduct = async () => {
-      const data = await fetchData()
-      
-      if(!data) {
-        return undefined
-      } else {
-        setProductList(data)
-      }
-
-    }
-    loadProduct()
-  }, [])
+  const productList = await fetchData();
 
   return (
     <div
