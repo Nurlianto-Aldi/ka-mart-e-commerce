@@ -22,7 +22,7 @@ const fetchData = async (): Promise<Product[] | undefined> => {
     const data: Product[] = await response.json();
     return data
   } catch (error) {
-    console.error(`Failed to do fetch operation : ${error}`)
+    console.log(`Failed to do fetch operation : ${error}`)
     return undefined;
   }
 }

@@ -1,3 +1,4 @@
+import Link from "next/link";
 import Image from "next/image";
 
 interface ProductDetail {
@@ -14,9 +15,12 @@ interface ProductCardProps {
 
 const ProductCard: React.FC<ProductCardProps> = ({productDetail}) => {
   
+  const productLink = `/products/${productDetail.id}`
+
   return (
-    <div
-      className="h-full flex flex-col bg-white rounded-xl shadow-lg overflow-hidden transition-shadow duration-300 hover:shadow-xl"
+    <Link
+      href={productLink}
+      className="flex flex-col bg-white h-full rounded-xl shadow-lg overflow-hidden transition-shadow duration-300 hover:shadow-xl"
     >
 
       {/* image */}
@@ -37,7 +41,7 @@ const ProductCard: React.FC<ProductCardProps> = ({productDetail}) => {
       <div
         className="flex flex-col grow p-6 lg:p-4"
       >
-        
+
         {/* title */}
         <h2
           className="font-semibold text-lg text-gray-900 mb-2 truncate"
@@ -59,10 +63,10 @@ const ProductCard: React.FC<ProductCardProps> = ({productDetail}) => {
         >
           ${productDetail.price}
         </span>
+
       </div>
 
-
-    </div>
+    </Link>
   )
 }
 
