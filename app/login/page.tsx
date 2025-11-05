@@ -1,4 +1,56 @@
-const loginPage = () => {
+"use client"
+
+
+import { useRouter } from "next/navigation";
+import { useState } from "react"
+
+const LoginPage = () => {
+
+  const [userName, setUserName] = useState<string>("");
+  const [userPassword, setUserPassword] = useState<string>("");
+  const [error, setError] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
+
+  const router = useRouter();
+
+  const handleLogin = async (e: React.FormEvent) => {
+
+    e.preventDefault();
+    setError("");
+    setLoading(true)
+
+    try {
+      const response = await fetch("https://fakestoreapi.com/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          username: userName,
+          password: userPassword,
+        }),
+      });
+
+      if(!response.ok) {
+        setError("Login failed. Check your username and password.")
+          return;
+      }
+
+      const data: {token: string} = await response.json();
+
+      localStorage.setItem("authToken", data.token);
+
+      router.push("/profile")
+
+    } catch(error) {
+      setError(`A network error occurred. Please try again. ${error}`)
+      return;
+    } finally {
+      setLoading(false)
+    }
+
+  };
+
   return (
     <main>
 
@@ -48,33 +100,51 @@ const loginPage = () => {
           <div
             className="flex flex-col w-3/5 outline-2 outline-gray-200 p-4 rounded-xl gap-8"
           >
-            <div>
-              <h1
-                className="flex font-bold pb-4 px-2"
-              >Email <span>*</span></h1>
-              <input 
-                type="email"
-                placeholder="Email"
-                className="w-full px-4 py-4 rounded-xl outline-2 outline-gray-200 placeholder-gray-300"
-                />
-            </div>
-            <div>
-              <h1
-                className="flex font-bold pb-4 px-2"
-              >Password <span>*</span></h1>
-              <input 
-                type="password"
-                placeholder="Password"
-                className="w-full px-4 py-4 rounded-xl outline-2 outline-gray-200 placeholder-gray-300"
-                />
-            </div>
-            <div>
+            <form onSubmit={handleLogin} className="flex flex-col gap-8">
+
+              {error && (
+                <div className="text-red-600 font-medium text-center">{error}</div>
+              )}
+
               <div>
-                <button className="w-full bg-indigo-600 text-white px-8 py-4 rounded-xl font-medium hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-all duration-300 transform ">
-                  Sign In
-                </button>
+                <h1
+                  className="flex font-bold pb-4 px-2"
+                >Username <span>*</span></h1>
+                <input 
+                  value={userName}
+                  onChange={(e) => setUserName(e.target.value)}
+                  type="text"
+                  placeholder="Username"
+                  className="w-full px-4 py-4 rounded-xl outline-2 outline-gray-200 placeholder-gray-300"
+                  />
               </div>
-            </div>
+              <div>
+                <h1
+                  className="flex font-bold pb-4 px-2"
+                >Password <span>*</span></h1>
+                <input 
+                  value={userPassword}
+                  onChange={(e) => setUserPassword(e.target.value)}
+                  type="password"
+                  placeholder="Password"
+                  className="w-full px-4 py-4 rounded-xl outline-2 outline-gray-200 placeholder-gray-300"
+                  />
+              </div>
+              <div>
+                <div>
+                  <button 
+                    type="submit"
+                    disabled={loading}
+                    className={`w-full text-white px-8 py-4 rounded-xl font-medium transition-all duration-300 transform ${
+                        loading ? 'bg-gray-400 cursor-not-allowed' : 'bg-indigo-600 hover:bg-indigo-700 focus:ring-indigo-500'
+                    }`}
+                    >
+                    {loading ? "Sign in..." : "Sign in"}
+                  </button>
+                </div>
+              </div>
+
+            </form>
           </div>
         </div>
       </div>
@@ -82,4 +152,4 @@ const loginPage = () => {
   )
 }
 
-export default loginPage;
+export default LoginPage;

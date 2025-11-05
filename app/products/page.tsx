@@ -15,7 +15,13 @@ interface Product {
 
 const fetchData = async (): Promise<Product[] | undefined> => {
   try {
-    const response = await fetch("https://fakestoreapi.com/products", { cache: "no-store"  });
+    const response = await fetch("https://fakestoreapi.com/products", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      cache: "no-store"
+    });
     if(!response.ok) {
       throw new Error("There's a problem with the response")
     }

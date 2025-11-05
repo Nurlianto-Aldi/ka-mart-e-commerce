@@ -10,7 +10,13 @@ interface ProductPageProps {
 
 const getSingleProduct = async (id: string ) => {
   try {
-    const response = await fetch(`https://fakestoreapi.com/products/${id}`)
+    const response = await fetch(`https://fakestoreapi.com/products/${id}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      cache: "no-store"
+    })
 
     if(!response.ok) {
       console.error(`Failed to fetch product ${id}. Status: ${response.status}`);
